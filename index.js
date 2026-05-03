@@ -14,7 +14,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 const USERS = [
-  { id: 1, username: 'joao', password: '1234', name: 'João da Silva' },
+  { id: 1, username: 'joão', password: '1234', name: 'João da Silva' }
 ];
 
 function findUser(username, password) {
