@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const {
   authenticateToken,
   generateAccessToken,
@@ -18,31 +17,27 @@ const materiasRouter = require('./rotas/materias');
 const lembretesRouter = require('./rotas/lembretes');
 
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'substua_por_uma_chave_secreta_forte';
-
 const USERS = [
-  { id: 1, username: 'joão', passwordHash: bcrypt.hashSync('1234', 10), name: 'João da Silva' },
+  { id: 1, username: 'joão', password: '1234', name: 'João da Silva' }
 ];
 
-async function findUser(username, password) {
-  const user = USERS.find((u) => u.username === username);
-  if (!user) return null;
-
-  const senhaCorreta = await bcrypt.compare(password, user.passwordHash);
-  return senhaCorreta ? user : null;
+function findUser(username, password) {
+  return USERS.find(
+    (user) => user.username === username && user.password === password
+  );
 }
 
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ erro: 'Informe usuário e senha.' });
+    return res.status(400).json({ message: 'Informe usuário e senha.' });
   }
 
-  const user = await findUser(username, password);
+  const user = findUser(username, password);
 
   if (!user) {
-    return res.status(401).json({ erro: 'Credenciais inválidas.' });
+    return res.status(401).json({ message: 'Credenciais inválidas.' });
   }
 
   const accessToken = generateAccessToken(user);
@@ -59,32 +54,24 @@ app.post('/login', async (req, res) => {
 app.post('/refresh-token', (req, res) => {
   const { refreshToken } = req.body;
 
-  if (!refreshToken) {
-    return res.status(400).json({ erro: 'Refresh token não informado.' });
-  }
-
   if (!isRefreshTokenValid(refreshToken)) {
-    return res.status(401).json({ erro: 'Refresh token inválido ou expirado.' });
+    return res.status(401).json({ message: 'Refresh token inválido ou expirado.' });
   }
 
-  try {
-    const payload = jwt.verify(refreshToken, JWT_SECRET);
-    const user = USERS.find((u) => u.id === payload.id && u.username === payload.username);
+  const payload = jwt.verify(refreshToken, process.env.JWT_SECRET || 'substua_por_uma_chave_secreta_forte');
+  const user = USERS.find((u) => u.id === payload.id && u.username === payload.username);
 
-    if (!user) {
-      return res.status(401).json({ erro: 'Usuário não encontrado.' });
-    }
-
-    const accessToken = generateAccessToken(user);
-
-    return res.json({
-      accessToken,
-      tokenType: 'Bearer',
-      expiresIn: '1h',
-    });
-  } catch (err) {
-    return res.status(401).json({ erro: 'Refresh token inválido ou expirado.' });
+  if (!user) {
+    return res.status(401).json({ message: 'Usuário não encontrado.' });
   }
+
+  const accessToken = generateAccessToken(user);
+
+  return res.json({
+    accessToken,
+    tokenType: 'Bearer',
+    expiresIn: '1h',
+  });
 });
 
 app.post('/logout', (req, res) => {
@@ -101,7 +88,7 @@ app.get('/profile', authenticateToken, (req, res) => {
   const user = USERS.find((u) => u.id === req.user.id);
 
   if (!user) {
-    return res.status(404).json({ erro: 'Usuário não encontrado.' });
+    return res.status(404).json({ message: 'Usuário não encontrado.' });
   }
 
   return res.json({ id: user.id, username: user.username, name: user.name });
@@ -113,8 +100,9 @@ app.get('/protected', authenticateToken, (req, res) => {
 
 app.use('/calendario', authenticateToken, calendarioRouter);
 app.use('/lembretes', authenticateToken, lembretesRouter);
-app.use('/materias', authenticateToken, materiasRouter);
+app.use('/materias', authenticateToken, materiasRouter);  
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+
