@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { isDataValida, isValorValido } = require('../utils');
+const { isDataValida, isValorValido } = require('./utils');
 
 const eventos = [];
 let nextId = 1;

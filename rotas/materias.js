@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { isDataValida, isValorValido, isNotaValida, isPesoValido } = require('../utils');
+const { isDataValida, isValorValido, isNotaValida, isPesoValido } = require('./utils');
 
 const materias = [];
 const atividades = [];
