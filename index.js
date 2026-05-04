@@ -12,6 +12,10 @@ const {
 const app = express();
 app.use(express.json());
 
+const calendarioRouter = require('./rotas/calendario');
+const materiasRouter = require('./rotas/materias');
+const lembretesRouter = require('./rotas/lembretes');
+
 const PORT = process.env.PORT || 3000;
 const USERS = [
   { id: 1, username: 'joão', password: '1234', name: 'João da Silva' }
@@ -93,6 +97,10 @@ app.get('/profile', authenticateToken, (req, res) => {
 app.get('/protected', authenticateToken, (req, res) => {
   return res.json({ message: 'Acesso autorizado a rota protegida.', user: req.user });
 });
+
+app.use('/calendario',calendarioRouter);
+app.use('/lembretes',lembretesRouter);
+app.use('/materias',materiasRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
