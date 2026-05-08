@@ -20,12 +20,63 @@ const PORT = process.env.PORT || 3000;
 const USERS = [
   { id: 1, username: 'joão', password: '1234', name: 'João da Silva' }
 ];
+let nextUserId = 2;
 
 function findUser(username, password) {
   return USERS.find(
     (user) => user.username === username && user.password === password
   );
 }
+
+function findUserByUsername(username) {
+  return USERS.find((user) => user.username === username);
+}
+
+app.post('/register', (req, res) => {
+  const { username, password, name } = req.body;
+
+  if (!username || !password || !name) {
+    return res.status(400).json({
+      message: 'Informe username, password e name.',
+    });
+  }
+
+  if (username.trim().length < 3) {
+    return res.status(400).json({
+      message: 'O username deve ter pelo menos 3 caracteres.',
+    });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      message: 'A senha deve ter pelo menos 6 caracteres.',
+    });
+  }
+
+  if (findUserByUsername(username.trim())) {
+    return res.status(409).json({
+      message: 'Username já está em uso.',
+    });
+  }
+
+  const newUser = {
+    id: nextUserId++,
+    username: username.trim(),
+    password, // ⚠️ Em produção: substituir por bcrypt.hash(password, 10)
+    name: name.trim(),
+  };
+
+  USERS.push(newUser);
+
+  return res.status(201).json({
+    message: 'Usuário criado com sucesso.',
+    user: {
+      id: newUser.id,
+      username: newUser.username,
+      name: newUser.name,
+    },
+  });
+});
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
