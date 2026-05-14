@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda de Estudos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-avatar">👤</div>
+    <div>
+      <div class="sidebar-user" id="sidebar-username">Usuário</div>
+    </div>
+    <div class="sidebar-status">
+      <div class="sidebar-dot off" id="status-dot"></div>
+    </div>
+  </div>
+
+  <button class="nav-btn active" onclick="showPanel('dashboard', this)">
+    <span class="nav-icon">🏠</span> Página inicial
+  </button>
+  <button class="nav-btn" onclick="showPanel('perfil', this)">
+    <span class="nav-icon">📊</span> Desempenho
+  </button>
+  <button class="nav-btn" onclick="showPanel('pomodoro', this)">
+    <span class="nav-icon">🍅</span> Pomodoro
+  </button>
+  <button class="nav-btn" onclick="showPanel('calendario', this)">
+    <span class="nav-icon">📅</span> Calendário
+  </button>
+
+  <div class="nav-sep"></div>
+  <div class="nav-section">Favoritos</div>
+  <div class="nav-section" style="margin-top:6px">Recentes</div>
+
+  <!-- REMOVIDO: botão "Nova página" -->
+  <button class="nav-btn" onclick="showPanel('lembretes', this)">
+    <span class="nav-icon">📋</span> Lista de tarefas
+  </button>
+  <button class="nav-btn" onclick="showPanel('materias', this)">
+    <span class="nav-icon">📚</span> Matérias
+  </button>
+
+  <div class="sidebar-bottom">
+    <button class="nav-btn" onclick="showPanel('auth', this)">
+      <span class="nav-icon">🗑</span> Lixeira
+    </button>
+    <button class="nav-btn" onclick="showPanel('auth', this)">
+      <span class="nav-icon">⚙️</span> Configurações
+    </button>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════ -->
+<div class="main-wrap">
+  <div class="topbar">
+    <div class="sidebar-status" style="font-size:0.8rem;color:var(--text-muted);cursor:pointer" onclick="showPanel('auth',null)">
+      ☰
+    </div>
+    <div class="topbar-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Buscar...">
+    </div>
+    <div class="topbar-actions">
+      <div class="topbar-bell">
+        🔔
+        <div class="bell-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════ DASHBOARD ════ -->
+    <div id="panel-dashboard" class="panel active">
+      <div class="dash-greeting">Olá! 👋</div>
+
+      <div class="dash-grid">
+        <div class="dash-left">
+
+          <!-- Tarefas -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <div class="card-box-title">📋 Lista de Tarefas</div>
+              <a class="card-box-link" onclick="showPanel('lembretes', document.querySelector('.nav-btn:nth-child(8)'))">Ver todos &gt;</a>
+            </div>
+            <div id="dash-tarefas">
+              <div class="empty-state"><div class="empty-icon">⏳</div>Carregando...</div>
+            </div>
+            <button class="add-lembrete-btn" onclick="openModal('modal-add-lembrete')">⊕ Adicionar Lembrete</button>
+          </div>
+
+          <!-- Matérias -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <div class="card-box-title">📚 Matérias</div>
+              <a class="card-box-link" onclick="showPanel('materias', document.querySelector('.nav-btn:nth-child(9)'))">Ver todas &gt;</a>
+            </div>
+            <div class="materias-grid" id="dash-materias">
+              <div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⏳</div>Carregando...</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="dash-right">
+          <!-- Calendário mini -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <div class="card-box-title">Calendário</div>
+            </div>
+            <div class="mini-cal">
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="calMove(-1)">‹</button>
+                <span class="cal-title" id="mini-cal-title"></span>
+                <button class="cal-nav-btn" onclick="calMove(1)">›</button>
+              </div>
+              <div class="cal-grid" id="mini-cal-grid"></div>
+            </div>
+          </div>
+
+          <!-- Pomodoro mini -->
+          <div class="card-box">
+            <div class="pomo-mini">
+              <div class="pomo-mini-title">Pomodoro ⏱</div>
+              <div class="pomo-times">
+                <span class="pomo-focus-val" id="mini-pomo-focus">25:00</span>
+                <span class="pomo-sep">|</span>
+                <span class="pomo-break-val" id="mini-pomo-break">10:00</span>
+              </div>
+              <button class="btn-pomo-start" onclick="showPanel('pomodoro', document.querySelectorAll('.nav-btn')[2]); pomoStartFromMini()">
+                ▶ Iniciar Foco
+              </button>
+              <div class="pomo-labels">
+                <span>Foco <span class="pomo-label-val">25:00</span></span>
+                <span>Pausa <span class="pomo-label-val">10:00</span></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ POMODORO ════ -->
+    <div id="panel-pomodoro" class="panel">
+      <div class="page-header">
+        <div class="page-title">Pomodoro</div>
+      </div>
+
+      <div class="pomo-page">
+        <div class="pomo-center">
+          <div class="pomo-ring-wrap">
+            <svg class="pomo-ring-svg" width="220" height="220" viewBox="0 0 220 220">
+              <circle class="pomo-ring-bg" cx="110" cy="110" r="95"/>
+              <circle class="pomo-ring-fg" id="pomo-ring" cx="110" cy="110" r="95"
+                stroke-dasharray="596.9"
+                stroke-dashoffset="0"/>
+            </svg>
+            <div class="pomo-ring-inner">
+              <div class="pomo-phase" id="pomo-phase">Foco</div>
+              <div class="pomo-clock" id="pomo-clock">25:00</div>
+              <div class="pomo-next" id="pomo-next">Até a próxima pausa</div>
+            </div>
+          </div>
+
+          <div class="pomo-controls">
+            <button class="btn-pomo btn-pomo-main" id="pomo-btn" onclick="pomoToggle()">▶ Iniciar</button>
+            <button class="btn-pomo btn-pomo-ghost" onclick="pomoReset()">↺ Reiniciar</button>
+          </div>
+
+          <div class="pomo-cycles">Ciclos de hoje</div>
+          <div class="pomo-cycles"><strong id="pomo-cycles">0</strong></div>
+        </div>
+
+        <div class="session-panel">
+          <div class="session-title">Sessão</div>
+
+          <div class="session-option active" id="sess-foco" onclick="pomoSetMode('foco')">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="session-dot"></div>
+              <span>Foco</span>
+            </div>
+            <span class="session-time" id="sess-foco-time">25min</span>
+          </div>
+          <div class="session-option" id="sess-curta" onclick="pomoSetMode('curta')">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="session-dot"></div>
+              <span>Pausa Curta</span>
+            </div>
+            <span class="session-time">5min</span>
+          </div>
+          <div class="session-option" id="sess-longa" onclick="pomoSetMode('longa')">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="session-dot"></div>
+              <span>Pausa Longa</span>
+            </div>
+            <span class="session-time">10min</span>
+          </div>
+
+          <div class="pomo-stats">
+            <div class="pomo-stats-title">Estatísticas de hoje</div>
+            <div class="pomo-stat-row"><span>Foco concluído</span><strong id="stat-foco">0 min</strong></div>
+            <div class="pomo-stat-row"><span>Pausas concluídas</span><strong id="stat-pausas">00</strong></div>
+            <div class="pomo-stat-row"><span>Ciclos concluídos</span><strong id="stat-ciclos">00</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ CALENDÁRIO ════ -->
+    <div id="panel-calendario" class="panel">
+      <div class="page-header">
+        <div class="page-title">📅 Calendário</div>
+        <button class="btn-primary" onclick="openModal('modal-add-evento')">➕ Novo Evento</button>
+      </div>
+
+      <div class="card-box">
+        <div class="cal-big">
+          <div class="cal-big-nav">
+            <button class="btn-secondary" onclick="calBigMove(-1)">‹ Anterior</button>
+            <span class="cal-big-title" id="cal-big-title"></span>
+            <button class="btn-secondary" onclick="calBigMove(1)">Próximo ›</button>
+          </div>
+
+          <!--
+            FIX: grid do calendário grande.
+            Os labels (Dom–Sáb) ficam DENTRO do mesmo .cal-big-grid,
+            e os dias são injetados logo em seguida por JS (id="cal-big-days").
+            Antes havia um <div id="cal-big-grid"> aninhado, quebrando o alinhamento.
+          -->
+          <div class="cal-big-grid">
+            <div class="cal-big-day-label">Dom</div>
+            <div class="cal-big-day-label">Seg</div>
+            <div class="cal-big-day-label">Ter</div>
+            <div class="cal-big-day-label">Qua</div>
+            <div class="cal-big-day-label">Qui</div>
+            <div class="cal-big-day-label">Sex</div>
+            <div class="cal-big-day-label">Sáb</div>
+            <!-- dias injetados aqui como filhos diretos via JS via id cal-big-days -->
+          </div>
+          <!-- container separado para os dias, fora do grid de labels -->
+          <div class="cal-big-grid" id="cal-big-days" style="margin-top:0;gap:4px"></div>
+        </div>
+      </div>
+
+      <div class="eventos-list">
+        <div class="eventos-list-title">Eventos</div>
+        <div id="lista-eventos">
+          <div class="empty-state"><div class="empty-icon">📅</div>Nenhum evento ainda</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ MATÉRIAS ════ -->
+    <div id="panel-materias" class="panel">
+      <div class="page-header">
+        <div class="page-title">📚 Matérias</div>
+        <button class="btn-primary" onclick="openModal('modal-add-materia')">➕ Nova Matéria</button>
+      </div>
+      <div class="mat-page-grid" id="lista-materias">
+        <div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📚</div>Nenhuma matéria ainda</div>
+      </div>
+    </div>
+
+    <!-- ════ LEMBRETES ════ -->
+    <div id="panel-lembretes" class="panel">
+      <div class="page-header">
+        <div class="page-title">📋 Lista de Tarefas</div>
+        <button class="btn-primary" onclick="openModal('modal-add-lembrete')">➕ Nova Tarefa</button>
+      </div>
+      <div id="lista-lembretes">
+        <div class="empty-state"><div class="empty-icon">✅</div>Nenhuma tarefa ainda</div>
+      </div>
+    </div>
+
+    <!-- ════ AUTH / CONFIG ════ -->
+    <div id="panel-auth" class="panel">
+      <div class="auth-wrap">
+        <div class="auth-title">Configurações de Conta</div>
+        <div class="auth-sub">Gerencie seu acesso à plataforma.</div>
+
+        <div id="auth-perfil-area"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">🔑 Login</div>
+          <div class="field"><label>Username</label><input id="login-username" placeholder="seu username"></div>
+          <div class="field"><label>Senha</label><input id="login-password" type="password" placeholder="sua senha"></div>
+          <div class="btn-actions">
+            <button class="btn-primary" onclick="login()">🔑 Entrar</button>
+            <button class="btn-danger" onclick="logout()">🚪 Sair</button>
+          </div>
+          <div id="token-display"></div>
+          <div id="res-auth" class="res-area"></div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">✅ Criar nova conta</div>
+          <div class="form-row">
+            <div class="field"><label>Username</label><input id="reg-username" placeholder="ex: maria123"></div>
+            <div class="field"><label>Nome completo</label><input id="reg-name" placeholder="ex: Maria Silva"></div>
+          </div>
+          <div class="field"><label>Senha</label><input id="reg-password" type="password" placeholder="mín. 6 caracteres"></div>
+          <div class="btn-actions">
+            <button class="btn-primary" onclick="registrar()">Registrar</button>
+          </div>
+          <div id="res-register" class="res-area"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════ PERFIL ════ -->
+    <div id="panel-perfil" class="panel">
+      <div class="page-header"><div class="page-title">📊 Desempenho</div></div>
+      <div id="perfil-area">
+        <div class="empty-state"><div class="empty-icon">👤</div>Faça login para ver seu perfil</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-wrap -->
+
+<!-- ════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
+
+<!-- Modal: Adicionar Lembrete -->
+<div class="modal-overlay" id="modal-add-lembrete">
+  <div class="modal">
+    <div class="modal-title">
+      ➕ Nova Tarefa
+      <button class="modal-close" onclick="closeModal('modal-add-lembrete')">✕</button>
+    </div>
+    <div class="field"><label>Título</label><input id="lem-titulo" placeholder="ex: Estudar para prova"></div>
+    <div class="form-row">
+      <div class="field"><label>Prioridade</label>
+        <select id="lem-prioridade">
+          <option value="media">Média</option>
+          <option value="baixa">Baixa</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+      <div class="field"><label>Vencimento</label><input id="lem-data" type="datetime-local"></div>
+    </div>
+    <div class="field"><label>Descrição</label><input id="lem-desc" placeholder="opcional"></div>
+    <div class="btn-actions">
+      <button class="btn-primary" onclick="criarLembrete()">Criar Tarefa</button>
+      <button class="btn-secondary" onclick="closeModal('modal-add-lembrete')">Cancelar</button>
+    </div>
+    <div id="res-lembretes" class="res-area"></div>
+  </div>
+</div>
+
+<!-- Modal: Adicionar Matéria -->
+<div class="modal-overlay" id="modal-add-materia">
+  <div class="modal">
+    <div class="modal-title">
+      📚 Nova Matéria
+      <button class="modal-close" onclick="closeModal('modal-add-materia')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Nome</label><input id="mat-nome" placeholder="ex: Cálculo II"></div>
+      <div class="field"><label>Professor</label><input id="mat-prof" placeholder="ex: Prof. João"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Carga horária</label><input id="mat-carga" type="number" placeholder="ex: 60"></div>
+      <div class="field"><label>Cor</label><input id="mat-cor" type="color" value="#7C3AED"></div>
+    </div>
+    <div class="btn-actions">
+      <button class="btn-primary" onclick="criarMateria()">Criar Matéria</button>
+      <button class="btn-secondary" onclick="closeModal('modal-add-materia')">Cancelar</button>
+    </div>
+    <div id="res-materias" class="res-area"></div>
+  </div>
+</div>
+
+<!-- Modal: Adicionar Evento -->
+<div class="modal-overlay" id="modal-add-evento">
+  <div class="modal">
+    <div class="modal-title">
+      📅 Novo Evento
+      <button class="modal-close" onclick="closeModal('modal-add-evento')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Título</label><input id="ev-titulo" placeholder="ex: Prova de Cálculo"></div>
+      <div class="field"><label>Tipo</label>
+        <select id="ev-tipo">
+          <option value="prova">Prova</option>
+          <option value="trabalho">Trabalho</option>
+          <option value="aula">Aula</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Data início</label><input id="ev-inicio" type="datetime-local"></div>
+      <div class="field"><label>Data fim</label><input id="ev-fim" type="datetime-local"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Cor</label><input id="ev-cor" type="color" value="#7C3AED"></div>
+      <div class="field"><label>Descrição</label><input id="ev-desc" placeholder="opcional"></div>
+    </div>
+    <div class="btn-actions">
+      <button class="btn-primary" onclick="criarEvento()">Criar Evento</button>
+      <button class="btn-secondary" onclick="closeModal('modal-add-evento')">Cancelar</button>
+    </div>
+    <div id="res-calendario" class="res-area"></div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
