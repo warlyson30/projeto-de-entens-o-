@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda de Estudos — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body style="margin:0;padding:0;background:var(--bg)">
+
+<!-- TELA LOGIN -->
+<div id="auth-login" class="auth-split">
+  <div class="auth-left">
+    <div class="auth-left-inner">
+      <h1 class="auth-headline">Organize.<br><span class="auth-accent">Planeje.</span><br>Alcance mais.</h1>
+      <p class="auth-tagline">Sua central para gerenciar tarefas, matérias<br>e foco com eficiência.</p>
+    </div>
+    <div class="auth-blob"></div>
+    <div class="auth-float-icons">
+      <span style="top:22%;left:10%">⏱</span>
+      <span style="top:38%;right:16%">📊</span>
+      <span style="top:58%;left:6%">⭐</span>
+      <span style="bottom:28%;left:52%">⚡</span>
+      <span style="bottom:16%;right:8%">📝</span>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <h2 class="auth-card-title">Bem-vindo de volta! 👋</h2>
+      <p class="auth-card-sub">Faça o login para continuar organizando suas ideias e tarefas.</p>
+      <div id="res-auth" class="res-area"></div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Username</label>
+        <input class="auth-input" id="login-username" placeholder="seu nome completo" autocomplete="username">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Senha</label>
+        <input class="auth-input" id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn-primary" onclick="login()">⊕ Entrar</button>
+      <p class="auth-switch">Não tem uma conta? <a class="auth-link" onclick="showRegister()">Crie uma agora</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- TELA REGISTRO -->
+<div id="auth-register" class="auth-split" style="display:none">
+  <div class="auth-left">
+    <div class="auth-left-inner">
+      <h1 class="auth-headline">Organize.<br><span class="auth-accent">Planeje.</span><br>Alcance mais.</h1>
+      <p class="auth-tagline">Sua central para gerenciar tarefas, matérias<br>e foco com eficiência.</p>
+    </div>
+    <div class="auth-blob"></div>
+    <div class="auth-float-icons">
+      <span style="top:22%;left:10%">⏱</span>
+      <span style="top:38%;right:16%">📊</span>
+      <span style="top:58%;left:6%">⭐</span>
+      <span style="bottom:28%;left:52%">⚡</span>
+      <span style="bottom:16%;right:8%">📝</span>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <p class="auth-back"><a class="auth-link" onclick="showLogin()">← Voltar para o login</a></p>
+      <h2 class="auth-card-title">Crie sua conta!</h2>
+      <p class="auth-card-sub">Preencha os dados abaixo para começar a usar.</p>
+      <div id="msg-register" class="res-area"></div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Nome completo</label>
+        <input class="auth-input" id="reg-name" placeholder="Seu nome completo" autocomplete="name">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Nome de usuário</label>
+        <input class="auth-input" id="reg-username" placeholder="ex: maria123" autocomplete="username">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Senha</label>
+        <input class="auth-input" id="reg-password" type="password" placeholder="Mín. 6 caracteres" autocomplete="new-password">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Confirmar a senha</label>
+        <input class="auth-input" id="reg-password-confirm" type="password" placeholder="Confirme sua senha" autocomplete="new-password">
+      </div>
+      <button class="auth-btn-primary" onclick="registrar()">⊕ Criar conta</button>
+      <p class="auth-switch">Já tem conta? <a class="auth-link" onclick="showLogin()">Fazer login</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="login.js"></script>
+</body>
+</html>

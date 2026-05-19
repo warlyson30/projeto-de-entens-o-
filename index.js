@@ -17,6 +17,10 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
 const cors = require('cors');
 app.use(cors({
   origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],

@@ -19,7 +19,7 @@
       <div class="sidebar-user" id="sidebar-username">Usuário</div>
     </div>
     <div class="sidebar-status">
-      <div class="sidebar-dot off" id="status-dot"></div>
+      <div class="sidebar-dot on" id="status-dot"></div>
     </div>
   </div>
 
@@ -40,7 +40,6 @@
   <div class="nav-section">Favoritos</div>
   <div class="nav-section" style="margin-top:6px">Recentes</div>
 
-  <!-- REMOVIDO: botão "Nova página" -->
   <button class="nav-btn" onclick="showPanel('lembretes', this)">
     <span class="nav-icon">📋</span> Lista de tarefas
   </button>
@@ -49,11 +48,8 @@
   </button>
 
   <div class="sidebar-bottom">
-    <button class="nav-btn" onclick="showPanel('auth', this)">
-      <span class="nav-icon">🗑</span> Lixeira
-    </button>
-    <button class="nav-btn" onclick="showPanel('auth', this)">
-      <span class="nav-icon">⚙️</span> Configurações
+    <button class="nav-btn" onclick="logout()">
+      <span class="nav-icon">🚪</span> Sair
     </button>
   </div>
 </aside>
@@ -63,9 +59,6 @@
 ════════════════════════════════════════════ -->
 <div class="main-wrap">
   <div class="topbar">
-    <div class="sidebar-status" style="font-size:0.8rem;color:var(--text-muted);cursor:pointer" onclick="showPanel('auth',null)">
-      ☰
-    </div>
     <div class="topbar-search">
       <span class="search-icon">🔍</span>
       <input type="text" placeholder="Buscar...">
@@ -231,13 +224,6 @@
             <span class="cal-big-title" id="cal-big-title"></span>
             <button class="btn-secondary" onclick="calBigMove(1)">Próximo ›</button>
           </div>
-
-          <!--
-            FIX: grid do calendário grande.
-            Os labels (Dom–Sáb) ficam DENTRO do mesmo .cal-big-grid,
-            e os dias são injetados logo em seguida por JS (id="cal-big-days").
-            Antes havia um <div id="cal-big-grid"> aninhado, quebrando o alinhamento.
-          -->
           <div class="cal-big-grid">
             <div class="cal-big-day-label">Dom</div>
             <div class="cal-big-day-label">Seg</div>
@@ -246,9 +232,7 @@
             <div class="cal-big-day-label">Qui</div>
             <div class="cal-big-day-label">Sex</div>
             <div class="cal-big-day-label">Sáb</div>
-            <!-- dias injetados aqui como filhos diretos via JS via id cal-big-days -->
           </div>
-          <!-- container separado para os dias, fora do grid de labels -->
           <div class="cal-big-grid" id="cal-big-days" style="margin-top:0;gap:4px"></div>
         </div>
       </div>
@@ -283,47 +267,11 @@
       </div>
     </div>
 
-    <!-- ════ AUTH / CONFIG ════ -->
-    <div id="panel-auth" class="panel">
-      <div class="auth-wrap">
-        <div class="auth-title">Configurações de Conta</div>
-        <div class="auth-sub">Gerencie seu acesso à plataforma.</div>
-
-        <div id="auth-perfil-area"></div>
-
-        <div class="form-section">
-          <div class="form-section-title">🔑 Login</div>
-          <div class="field"><label>Username</label><input id="login-username" placeholder="seu username"></div>
-          <div class="field"><label>Senha</label><input id="login-password" type="password" placeholder="sua senha"></div>
-          <div class="btn-actions">
-            <button class="btn-primary" onclick="login()">🔑 Entrar</button>
-            <button class="btn-danger" onclick="logout()">🚪 Sair</button>
-          </div>
-          <div id="token-display"></div>
-          <div id="res-auth" class="res-area"></div>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-title">✅ Criar nova conta</div>
-          <div class="form-row">
-            <div class="field"><label>Username</label><input id="reg-username" placeholder="ex: maria123"></div>
-            <div class="field"><label>Nome completo</label><input id="reg-name" placeholder="ex: Maria Silva"></div>
-          </div>
-          <div class="field"><label>Senha</label><input id="reg-password" type="password" placeholder="mín. 6 caracteres"></div>
-          <div class="btn-actions">
-            <button class="btn-primary" onclick="registrar()">Registrar</button>
-          </div>
-          <div id="res-register" class="res-area"></div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ════ PERFIL ════ -->
+    <!-- ════ PERFIL / DESEMPENHO ════ -->
     <div id="panel-perfil" class="panel">
-      <div class="page-header"><div class="page-title">📊 Desempenho</div></div>
+      <div class="page-header"><div class="page-title">Desempenho</div></div>
       <div id="perfil-area">
-        <div class="empty-state"><div class="empty-icon">👤</div>Faça login para ver seu perfil</div>
+        <div class="empty-state"><div class="empty-icon">⏳</div>Carregando...</div>
       </div>
     </div>
 
@@ -357,7 +305,6 @@
       <button class="btn-primary" onclick="criarLembrete()">Criar Tarefa</button>
       <button class="btn-secondary" onclick="closeModal('modal-add-lembrete')">Cancelar</button>
     </div>
-    <div id="res-lembretes" class="res-area"></div>
   </div>
 </div>
 
@@ -380,7 +327,6 @@
       <button class="btn-primary" onclick="criarMateria()">Criar Matéria</button>
       <button class="btn-secondary" onclick="closeModal('modal-add-materia')">Cancelar</button>
     </div>
-    <div id="res-materias" class="res-area"></div>
   </div>
 </div>
 
@@ -414,13 +360,12 @@
       <button class="btn-primary" onclick="criarEvento()">Criar Evento</button>
       <button class="btn-secondary" onclick="closeModal('modal-add-evento')">Cancelar</button>
     </div>
-    <div id="res-calendario" class="res-area"></div>
   </div>
 </div>
 
 <!-- Toast container -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<script src="script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
