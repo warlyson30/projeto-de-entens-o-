@@ -364,6 +364,19 @@
 </div>
 
 <!-- Toast container -->
+<!-- Modal: Confirmação de Logout -->
+<div class="logout-modal-overlay" id="modal-logout">
+  <div class="logout-modal">
+    <div class="logout-modal-icon">🚪</div>
+    <div class="logout-modal-title">Tem certeza que deseja sair?</div>
+    <div class="logout-modal-sub">Você será desconectado da sua conta e precisará fazer login novamente.</div>
+    <div class="logout-modal-btns">
+      <button class="logout-btn-confirm" onclick="confirmarLogout()">Sair</button>
+      <button class="logout-btn-cancel" onclick="closeLogoutModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script src="app.js"></script>

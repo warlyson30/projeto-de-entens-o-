@@ -112,8 +112,18 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
   Body: { refreshToken }
   200 : { message }
 */
-async function logout() {
-  // Envia refreshToken exatamente como o back espera
+function logout() {
+  // Abre modal de confirmação antes de deslogar
+  document.getElementById('modal-logout')?.classList.add('open');
+}
+
+function closeLogoutModal() {
+  document.getElementById('modal-logout')?.classList.remove('open');
+}
+
+async function confirmarLogout() {
+  closeLogoutModal();
+  const refreshToken = localStorage.getItem('refreshToken');
   await req('POST', '/logout', { refreshToken });
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
@@ -655,3 +665,10 @@ carregarPerfil();
 renderMiniCal();
 renderCalBig();
 loadDashboard();
+
+/* ── Fecha modal de logout ao clicar no overlay ── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('modal-logout')?.addEventListener('click', function(e) {
+    if (e.target === this) closeLogoutModal();
+  });
+});
